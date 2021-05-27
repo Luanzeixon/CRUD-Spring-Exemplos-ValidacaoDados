@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+	<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE-edge"/>
+	<meta name="viewport" content="width-device-width, initial-scale=1, shrink-to-fit=no"/>
+<title>Cadastro de Usuario</title>
+</head>
+<body>
+
+	<h1>Cadastro de Usuario</h1>
+	
+	<div th:if="${msgSucesso} != null "> <!-- so vai aparecer a div SE tiver a variavel msgSucesso -->
+		<b th:text="${msgSucesso}" style="color: blue;"></b>
+		<br/><br/>
+	</div>
+	
+	<form th:action="@{/usuarios/salvar}" th:object="${usuario}" 
+	method="post" > <!-- "@" se refere a chamar uma url, e $ para acessar uma variavel,no caso o th:object diz que eu estou cadastrando um objeto de uma classe atrabes do formulario(tem que especificar no controller) --> 
+	
+		<!-- Validação TEM que ser dentro do form -->
+	<div th:if="${#fields.hasAnyErros()}"> <!-- so vai ser exibido a div caso tenha algum erro nos campos do form -->
+		<ul>
+		<li th:each="error : ${#fields.detailedErros()} "> <!-- pra cada erro criar uma linha -->
+			<b th:text="${error.message}" style="color: red"></b>
+			</li>
+		</ul>
+	</div>
+	
+	
+	<input type="hidden" th:field="${usuario.id}"/> <!-- Pra maneter o id do usuario -->
+
+	<table>
+		<tr>
+			<td>Nome:</td>
+			<td>
+				<input type="text" th:field="${usuario.nome}"> <!-- campo nome vai salvar na variavel usuario(colocada a sima) no atributo nome da classe ja criada -->
+			</td>
+		</tr>
+		<tr>
+			<td>Emial:</td>
+			<td>
+				<input type="email" th:field="${usuario.email}">
+			</td>
+		</tr>
+		<tr>
+			<td>Senha:</td>
+			<td>
+				<input type="password" th:field="${usuario.senha}">
+			</td>
+		</tr>
+		<tr>
+			<td>Sexo:</td>
+			<td>
+				<input type="radio" th:field="${usuario.sexo}" th:value="M"> Masculino
+			</td>
+			<td>
+				<input type="radio" th:field="${usuario.sexo}" th:value="F"> Feminino
+			</td>
+		</tr>
+		<tr>
+			<td>Profissão:</td>
+			<td>
+				<select th:field="${usuario.profissao}">
+					<option value=""> Selecione </option>
+					<option th:each="p : ${profissoes}" th:text="${p}"  th:value="${p}"> <!-- th:each = for, cada prossiao vai ser armazenada na variavel p(consegue acessar todas profissoes por p) ou seja vai criar varias option com os nomes -->
+					 </option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+			<!-- Se o id do usuario for igual a 0 (? é uma pergunta) coloque Cadastrar se nao coloque Editar -->
+				<input type="submit" th:value="${usuario.id} == 0 ? Cadastrar : Editar">
+				<input type="submit" value="Cancelar" formaction="/" formmethod="get">
+			</td>
+		</tr>
+	</table>
+		
+	
+	</form>
+	
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+	<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE-edge"/>
+	<meta name="viewport" content="width-device-width, initial-scale=1, shrink-to-fit=no"/>
+<title>Busca de Usuarios</title>
+</head>
+<body>
+
+	<h1>Busca de Usuarios</h1>
+	
+	<div th:if="${msgSucesso} != null "> 
+		<b th:text="${msgSucesso}" style="color: blue;"></b>
+		<br/><br/>
+	</div>
+	<div th:if="${msgErro} != null "> 
+		<b th:text="${msgErro}" style="color: red;"></b>
+		<br/><br/>
+	</div>
+	
+	<form th:action="@{/usuarios/buscar}"  
+	method="get" > <!-- method get deixa os parametros ficam na yrl viziveis, nao ultilzei busca por obg e sim por parametros  --> 
+	
+		<table>
+	
+			<tr>
+				<td>Nome:</td>
+				<td>
+					<input type="text" th:name="nome"> 
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="checkbox" th:name="mostrarTodosDados" th:value="true"/>
+					Mostrar todos os dados dos usuários
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="submit" value="buscar"/>  <!-- esse buscar vai retornar a url falado no form  --> 
+					<input type="submit" value="cancelar" formaction="/" formmethod="get"/> <!-- formaction muda o action padrao, pra mao ir pra a mesma url do buscar, formmethod muda o metodo padrao do form  -->
+					
+				</td>
+			</tr>
+		</table>
+	</form>
+	
+	<div th:if="${usuariosEncontrados != null}">
+		<table>
+			<tr>
+				<th>Nome</th>
+				<th>Email</th>
+				<th th:if="${mostrarTodosDados} == true">Sexo</th>
+				<th th:if="${mostrarTodosDados} == true">Profissão</th>
+				<th>Opções</th>
+			</tr>
+			<!-- u vai percorrer todos os dados dos usuarios encontrados-->
+			<tr th:each="u : ${usuariosEncontrados}"> <!-- pra cada registo encontrado criar uam linha-->
+				<td th:text="${u.nome}"></td>
+				<td th:text="${u.email}"></td>
+				<td th:text="${u.sexo}" th:if="${mostrarTodosDados} == true"></td>
+				<td th:text="${u.profissao}" th:if="${mostrarTodosDados} == true"></td>
+				<td>
+					<a th:href="'/usuarios/editar/' + ${u.id}"> <!-- Simbolo de "+" esta comcatenando com a outra parte-->
+						Editar  
+					</a>
+					<a th:href="'/usuarios/remover/' + ${u.id}"
+					onclick="if(!confirm('Deseja realmente remover o usuário?')) return false; "> <!-- Confirm pergunta o usuario algo e ele tem que responder sim ou nao, no caso ai se nao confirmar(!conform) -->
+						<!-- return false para cancelar a ação de remover -->
+						Remover
+					</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+</body>
+</html>
